@@ -72,12 +72,12 @@ What things you need to install the software
 *  [Maven](https://maven.apache.org/) - Dependency Management
 
 ## Running the tests
-Explain how to run the tests for this system
+To run the tests for this system
 ```maven
 mvn clean verify
 ```
 
-Explain how to create the test-coverage report for this system
+To create the test-coverage report for this system
 ```maven
 mvn clean install -P all-tests
 ```
