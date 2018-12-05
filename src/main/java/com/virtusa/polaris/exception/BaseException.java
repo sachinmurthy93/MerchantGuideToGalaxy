@@ -6,7 +6,7 @@ package com.virtusa.polaris.exception;
  * 
  * @author Sachin Murthy
  */
-public class BaseException extends RuntimeException {
+public class BaseException extends Exception {
     /**
      * serialVersionUID
      */

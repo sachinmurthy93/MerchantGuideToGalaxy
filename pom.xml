@@ -4,13 +4,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>MerchantGuideToGalaxy</groupId>
-    <artifactId>MerchantGuideToGalaxy</artifactId>
-    <!-- Output to jar format -->
+    <groupId>Latest-merchant</groupId>
+    <artifactId>latest-merchant</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.1.RELEASE</version>
+    </parent>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -22,6 +37,8 @@
             <version>1.16.6</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Junit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -34,6 +51,9 @@
             <version>3.3.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- end -->
+
+        <!-- logging dependencies-->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -44,25 +64,9 @@
             <artifactId>log4j-core</artifactId>
             <version>2.6.1</version>
         </dependency>
+        <!--end -->
 
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <version>3.11.0</version>
-        </dependency>
     </dependencies>
-
-    <properties>
-        <!-- Used to locate the profile specific configuration file. -->
-        <build.profile.id>dev</build.profile.id>
-        <jacoco.it.execution.data.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.execution.data.file>
-        <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.execution.data.file>
-        <jdk.version>1.7</jdk.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Only unit tests are run by default. -->
-        <skip.integration.tests>true</skip.integration.tests>
-        <skip.unit.tests>false</skip.unit.tests>
-    </properties>
 
     <!-- profiles  -->
     <profiles>
@@ -82,19 +86,11 @@
     <!-- end of profiles -->
 
     <build>
-        <finalName>galaxy-merchant</finalName>
         <plugins>
-
-            <!-- download source code in Eclipse, best practice -->
-            <!-- Set a JDK compiler level -->
+            <!-- Package as an executable jar/war -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
             <!-- Make this jar executable -->
@@ -105,7 +101,7 @@
                     <archive>
                         <manifest>
                             <!-- Jar file entry point -->
-                            <mainClass>co.in.AppDriver</mainClass>
+                            <mainClass>com.virtusa.com.virtusa.polaris.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -125,6 +121,8 @@
                 </executions>
             </plugin>
             <!-- end -->
+
         </plugins>
     </build>
+
 </project>

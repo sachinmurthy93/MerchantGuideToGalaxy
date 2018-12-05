@@ -71,15 +71,16 @@ What things you need to install the software
 * [Java 1.8.x](https://www.oracle.com/technetwork/java/index.html) - Java Platform, Standard Edition (Java SE)
 *  [Maven](https://maven.apache.org/) - Dependency Management
 
+## Running the Main application(Spring Boot console application)
+
+```maven
+mvn spring-boot:run
+```
+
 ## Running the tests
 To run the tests for this system
 ```maven
 mvn clean verify
-```
-
-To create the test-coverage report for this system
-```maven
-mvn clean install -P all-tests
 ```
 
 * Test coverage report location : `'/MerchantGuideToGalaxy/target/site/jacoco/index.html'`

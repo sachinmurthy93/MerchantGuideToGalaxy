@@ -35,6 +35,7 @@ public class GalaxyNumberSystemTranslation {
             }
         });
 
+
         return intStore[0] + intStore[1] + getRomanNumberToIntEquivalent(romanNumber.charAt(length - 1));
     }
 

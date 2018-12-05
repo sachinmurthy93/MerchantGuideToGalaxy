@@ -1,4 +1,4 @@
-package utils;
+package com.virtusa.polaris.utils;
 
 /**
  * Enum with application constants.
@@ -8,7 +8,10 @@ public enum AppConstants {
 
     METAL("metal"),
     METALQUANTITY("metalQuantity"),
-    SPACE(" ");
+    SPACE(" "),
+    CREDITS("credits"),
+    IS("is"),
+    QUESTIONMARK("?");
 
     private String value;
 

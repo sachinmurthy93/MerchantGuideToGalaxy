@@ -1,9 +1,8 @@
 package com.virtusa.polaris;
 
+import com.virtusa.polaris.metalstrading.GalaxyNumberSystemTranslation;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.virtusa.polaris.metalstrading.GalaxyNumberSystemTranslation;
 
 /**
  * test cases for galaxy number system conversion.

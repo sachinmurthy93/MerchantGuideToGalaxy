@@ -67,13 +67,11 @@ public class GalaxyMetalTradingTest {
     @Test
     public void testQueryRequestWrongQuestion() {
 
-        expException.expect(GalaxyTradeException.class);
-        expException.expectMessage("I have no idea what you are talking about");
-
         GalaxyMetalTrading galaxyMetal = new GalaxyMetalTrading();
-        galaxyMetal
+       long output = galaxyMetal
                 .saleQuery("how much wood could a woodchuck chuck if a woodchuck could chuck wood ?");
 
+        Assert.assertEquals(400, output);
     }
 
     @Test

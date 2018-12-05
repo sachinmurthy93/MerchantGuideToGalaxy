@@ -1,9 +1,10 @@
 package com.virtusa.polaris.metalstrading;
 
 import com.virtusa.polaris.exception.GalaxyTradeException;
+import com.virtusa.polaris.utils.AppConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import utils.AppConstants;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -14,10 +15,11 @@ import java.util.regex.Pattern;
  *
  * @author Sachin Murthy
  */
+@Service
 public class GalaxyMetalTrading {
 
     private static final Logger LOGGER = LogManager.getLogger(GalaxyMetalTrading.class);
-    private final Map<String, String> quatityMap = RateCalculator.romanEquivalentMetalMap;
+    private final Map<String, String> quantityMap = RateCalculator.romanEquivalentMetalMap;
     private final Map<String[], Float> metalRateMap = RateCalculator.metalRateMap;
     private final String metal = AppConstants.METAL.getValue();
     private final String metalQuantity = AppConstants.METALQUANTITY.getValue();
@@ -31,29 +33,30 @@ public class GalaxyMetalTrading {
      */
     public long saleQuery(String metalQuotation) {
         // extract question values {quotation+metal} from English statement.
-        final String quotationText = extractQueryText(metalQuotation);
+        try{
+            final String quotationText = extractQueryText(metalQuotation);
+            // separate out token as quotation words list and metal list with in map
+            final Map<String, List<String>> grpToken = separateOutTokens(Arrays
+                    .asList(quotationText.trim().split(AppConstants.SPACE.getValue()))); // create token out of
+            // those question values
+            // convert input quotation words into roman equivalent and later into numbers.
+            final long qty = inputQueryProcessor(grpToken);
 
-        // separate out token as quotation words list and metal list with in map
-        final Map<String, List<String>> grpToken = separateOutTokens(Arrays
-                .asList(quotationText.trim().split(AppConstants.SPACE.getValue()))); // create token out of
-        // those question values
+            // calculate total metal value as metal rate x qty using rate
+            // calculation matrix.
+            if (grpToken.get(metal).size() != 0) {
+                final long metalValue = calculateMetalValue(grpToken, qty);
+                LOGGER.info(getDisplayMessage(metalQuotation, quotationText + "is " + metalValue + " Credits"));
+                return metalValue;
+            } else { // No metal quote, just quotation words into roman equivalent.
+                LOGGER.info(getDisplayMessage(metalQuotation, quotationText + "is " + qty));
+                return qty;
+            }
 
-        // convert input quotation words into roman equivalent and later into numbers.
-        final long qty = inputQueryProcessor(grpToken);
-
-        // calculate total metal value as metal rate x qty using rate
-        // calculation matrix.
-        if (grpToken.get(metal).size() != 0) {
-            final long metalValue = calculateMetalValue(grpToken, qty);
-            // LOGGER.info("Query :" + metalQuotation + " metalPrice " + metalValue);
-            LOGGER.info(getDisplayMessage(metalQuotation, " metalPrice is " + metalValue));
-            return metalValue;
-        } else { // No metal quote, just quotation words into roman equivalent.
-            // LOGGER.info("Query :" + metalQuotation + " value of : " + qty);
-            LOGGER.info(getDisplayMessage(metalQuotation, " Value of " + qty));
-            return qty;
+        }catch (GalaxyTradeException e){
+            LOGGER.error(getDisplayMessage(metalQuotation, "I have no idea what you are talking about"));
         }
-
+        return 400;
     }
 
     /**
@@ -97,6 +100,7 @@ public class GalaxyMetalTrading {
 
     /**
      * For Processing input queries.
+     *
      * @param grpTokens
      * @return long
      */
@@ -120,8 +124,8 @@ public class GalaxyMetalTrading {
     private String prepareRomanNumer(List<String> qtyTokens) {
         final StringBuilder romanNumbers = new StringBuilder();
         for (String token : qtyTokens) {
-            if (quatityMap.get(token) != null) {
-                romanNumbers.append(quatityMap.get(token));
+            if (quantityMap.get(token) != null) {
+                romanNumbers.append(quantityMap.get(token));
             }
         }
         return romanNumbers.toString();
@@ -129,9 +133,10 @@ public class GalaxyMetalTrading {
 
     /**
      * return map having two array list 1. metal --> name of metal 2. Query -->.
-     *  list of quotations  along with qty
+     * list of quotations  along with qty
+     *
      * @param tokens
-     * @return map<string,list<string>>
+     * @return map<string                               ,                               list                               <                               string>>
      */
     private Map<String, List<String>> separateOutTokens(List<String> tokens) {
         final Map<String, List<String>> groupTokens = new HashMap<>();
@@ -140,7 +145,7 @@ public class GalaxyMetalTrading {
         final List<String> metal = new ArrayList<>();
         // group into two array list as metal & quotation list
         for (String token : tokens) {
-            if (quatityMap.get(token) != null) {
+            if (quantityMap.get(token) != null) {
                 quantity.add(token);
             } else {
                 metal.add(token);
@@ -157,20 +162,18 @@ public class GalaxyMetalTrading {
      * @param @quotation
      * @return
      */
-    private String extractQueryText(String query) {
+    private String extractQueryText(String query) throws GalaxyTradeException {
         // query format 1 -> for eg: how much is pish tegj glob glob ?
         // query format 2 -> for eg: how many Credits is glob prok silver ?
         final Pattern queryFormat1 = Pattern.compile("(how much is|how many Credits is)(.+?)\\?");
         String queryValue = getQueryValue(queryFormat1, query);
-        if (getQueryValue(queryFormat1, query) == null) {
-            LOGGER.error(getDisplayMessage(query, "I have no idea what you are talking about"));
-            throw new GalaxyTradeException(
-                    "I have no idea what you are talking about", "400");
+        if (queryValue == null) {
+            throw new GalaxyTradeException("I have no idea what you are talking about","400");
         }
         return queryValue;
     }
 
-    public static String getDisplayMessage(String query, String queryResponse) {
+    public String getDisplayMessage(String query, String queryResponse) {
         return "\n Query : " + query + " \n Response : " + queryResponse + " \n";
     }
 
